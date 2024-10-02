@@ -8,7 +8,7 @@ CodeSys属于私有协议，官方从未披露其报文格式和实现细节。�
 
 CodeSys V2版本的协议相对简单，如下图所示。报文头是以“\xbb\xbb”打头，紧接着就是长度字段，后面接着功能码，图中的功能码为92，最后就是数据部分，从结构上来说，V2的协议相对简单。
 
-![图片描述](Codesys协议分析/651413_CPGFXG9C7V7HYWK.png)
+![img](img/651413_CPGFXG9C7V7HYWK.png)
 
 ### V3
 
@@ -18,7 +18,7 @@ V3 与V2的协议完全不同，该协议架构如下图所示，该协议栈分
 3.通道层——Channel layer
 4.服务层——Services layer
 
-![图片描述](Codesys协议分析/651413_KF4MBKD5XDB9QTK.png)
+![img](img/651413_KF4MBKD5XDB9QTK.png)
 
 #### 块驱动层
 
@@ -26,17 +26,17 @@ V3 与V2的协议完全不同，该协议架构如下图所示，该协议栈分
 
 数据包的点
 
-![图片描述](Codesys协议分析/651413_5P2QG92NXKVCNY2.png)
+![img](img/651413_5P2QG92NXKVCNY2.png)
 
-![图片描述](Codesys协议分析/651413_8JYHU3MCVXDM5JM.png)
+![img](img/651413_8JYHU3MCVXDM5JM.png)
 
 #### 数据包层
 
 该层的主要目的是路由数据包，检测 CODESYS 网络中的节点，并将数据传输到下一层。
 
-![图片描述](Codesys协议分析/651413_85E55V363T8XT9D.png)
+![img](img/651413_85E55V363T8XT9D.png)
 
-![图片描述](Codesys协议分析/651413_ZXT5YM2EUJVF7F6.png)
+![img](img/651413_ZXT5YM2EUJVF7F6.png)
 
 简单介绍上面关键字段的含义：
 **Magic 字段：**
@@ -56,9 +56,9 @@ V3 与V2的协议完全不同，该协议架构如下图所示，该协议栈分
 
 通道是 CODESYS 网络节点之间的一种通信机制，它保证通信的同步、传输数据完整性的验证、消息传递的通知以及大量数据的传输。
 
-![图片描述](Codesys协议分析/651413_TR8R46TR367A5Y3.png)
+![img](img/651413_TR8R46TR367A5Y3.png)
 
-![图片描述](Codesys协议分析/651413_M29F7EQY6SJ45WB.png)
+![img](img/651413_M29F7EQY6SJ45WB.png)
 
 **Packet_type字段：**
 BLK（0x1）包类型，表示数据传输。
@@ -79,9 +79,9 @@ remaining_data 所包含的预期数据的大小。
 
 该层的主要任务是查询请求的服务并传输其操作设置。服务层的任务包括对在该层传输的数据进行编码、解码、加密和解密。
 
-![图片描述](Codesys协议分析/651413_7WX8CWG9W39YEFF.png)
+![img](img/651413_7WX8CWG9W39YEFF.png)
 
-![图片描述](Codesys协议分析/651413_QRJN85D4W7H87H4.png)
+![img](img/651413_QRJN85D4W7H87H4.png)
 
 **protocol_id字段：**
 使用的协议的ID。此ID指示哪个协议处理程序修改了数据以及应使用哪个协议将数据传输到服务。
@@ -104,11 +104,11 @@ CodeSys 在新版V3通讯协议中已经默认开启授权机制，用户必须�
 
 新版CodeSys V3通讯协议账号相关信息默认存放于UserDatabase文件中，旧版本的CodeSys V3的密码是MD5加密的，新版做了改进，使用了scrypt算法来进行存放。该算法在CryptoDeriveKey中实现，如下所示：
 
-![图片描述](Codesys协议分析/651413_HYMK6UBM8VC33KV.png)
+![img](img/651413_HYMK6UBM8VC33KV.png)
 
 UserDatabase文件内容如下，其中“admin”为用户名，后面接着的是密码哈希信息。
 
-![图片描述](Codesys协议分析/651413_AK9PHRK745NP75D.png)
+![img](img/651413_AK9PHRK745NP75D.png)
 
 - “d819a24df7bdc985”指的是scrypt的盐salt。
 - “02f6……5cfd” 指的是scrypt算出的密码哈希。
@@ -118,35 +118,35 @@ UserDatabase文件内容如下，其中“admin”为用户名，后面接着的
 
 当然即使算法设计的再健全，也挡不住用户使用弱口令。在最新版的组态软件并没有强制要求密码强度，使得用户也可以设置诸如“123456”等弱口令密码。这就导致安全意识不强的用户会将密码设置成弱口令。
 
-![图片描述](Codesys协议分析/651413_QY9DYZPBHBUU23P.png)
+![img](img/651413_QY9DYZPBHBUU23P.png)
 
 可以通过编写py脚本将scrypt哈希信息转换为hashcat的格式，从而利用hashcat对哈希进行爆破
 
-![图片描述](Codesys协议分析/651413_XHY7DW8K6H5MRR8.png)
+![img](img/651413_XHY7DW8K6H5MRR8.png)
 
 ### 授权协议流程
 
 客户端先通过CmpDevice的2号服务ID请求PLC获取公钥和challenge：
 
-![图片描述](Codesys协议分析/651413_EPTPBJEXHYT62T8.png)
+![img](img/651413_EPTPBJEXHYT62T8.png)
 
 PLC将会随机生成一个密钥对和一个32字节的challenge，响应包将包含公钥和challenge。
 
 公钥信息如下所示：
 
-![图片描述](Codesys协议分析/651413_V8R92HV3EPBNSF9.png)
+![img](img/651413_V8R92HV3EPBNSF9.png)
 
 32 字节challenge信息如下：
 
-![图片描述](Codesys协议分析/651413_WE74AHHFEF5D38X.png)
+![img](img/651413_WE74AHHFEF5D38X.png)
 
 客户端在接收以上信息后，使用CryptoAsymmetricEncrypt函数加密密码，该函数如下所示：
 
-![图片描述](Codesys协议分析/651413_XQ2MDNQJF2NTM76.png)
+![img](img/651413_XQ2MDNQJF2NTM76.png)
 
 使用python描述password_info生成算法：
 
-![图片描述](Codesys协议分析/651413_EVPDW6AJYGHEQXC.png)
+![img](img/651413_EVPDW6AJYGHEQXC.png)
 
 - RSA加密使用的是PKCS1_OAEP，其中的哈希算法为SHA256。
 
@@ -154,11 +154,11 @@ PLC将会随机生成一个密钥对和一个32字节的challenge，响应包将
 
   最后，客户端再次通过CmpDevice的2号服务ID下发到PLC中：
 
-![图片描述](Codesys协议分析/651413_HFYSDA9JGPF2VCV.png)
+![img](img/651413_HFYSDA9JGPF2VCV.png)
 
 如果密码正确的话将会返回app key，每次进行操作都需要携带该授权key。
 
-![图片描述](Codesys协议分析/651413_55G2QRUT9XNV7BC.png)
+![img](img/651413_55G2QRUT9XNV7BC.png)
 
 **风险分析**
 
@@ -168,7 +168,7 @@ PLC将会随机生成一个密钥对和一个32字节的challenge，响应包将
 
 密码保护是保护CodeSys PLC的重要防线，一旦攻击者突破这层防线，就可以利用注入代码的方法插入任意shellcode执行RCE。这是由于CodeSys为了实现可编程功能，会将用户编写的代码统一编译成机器码，并且由RunTime调度执行，执行的过程没有在VM或者sandbox中，这就导致攻击者可以插入任意的机器码（例如LINUX平台上的反弹shell）来完全接管PLC。
 
-![图片描述](Codesys协议分析/651413_6V9WV5CF9UVHA6H.png)
+![img](img/651413_6V9WV5CF9UVHA6H.png)
 
 # 参考资料
 

@@ -4,7 +4,7 @@ S7comm由西门子公司设计，用于PLC和SCADA之间通信的专属协议。
 
 S7comm数据是COTP数据包的载荷，第一个字节总是0x32。S7-400 系列（CP 443）的特殊通信处理器可使用该协议，而无需 TCP/IP 层。
 
-![image-20240512173355729](S7comm 协议/image-20240512173355729.png)
+![img](img/image-20240512173355729.png)
 
 要跟S7PLC建立连接需要三步，
 
@@ -20,13 +20,13 @@ S7comm协议至少包含以下的协议：
 
 其协议层大概如此
 
-![img](S7comm 协议/3.png)
+![img](img/3.png)
 
 ### TPKT协议
 
 TPKT协议是一个传输服务协议，它为上层的COPT和下层TCP进行了过渡。常用的RDP协议（remote desktop protocol，windows的远程桌面协议）也是基于TPKT的，TPKT的默认TCP端口为102（RDP为3389），其实它本身为payload增加的数据并不多，主要就是以下几个：
 
-![img](S7comm 协议/8JeRab3nNxZBkDg.png)
+![img](img/8JeRab3nNxZBkDg.png)
 
 - version，1byte，表明版本信息
 - reserved，1byte，看到这个名字就知道是保留的了
@@ -38,11 +38,11 @@ TPKT协议是一个传输服务协议，它为上层的COPT和下层TCP进行了
 
 以Wireshark所给的S7comm流量包为例，在建立S7comm连接前，先通过COTP进行握手，其中CR为connect request，CC为connect confirm，即握手过程。在握手完成后，即开始发送数据
 
-![image-20240513112623193](S7comm 协议/image-20240513112623193.png)
+![img](img/image-20240513112623193.png)
 
 展开详细情况，可以看到COTP有以下字段
 
-![image-20240513120238275](S7comm 协议/image-20240513120238275.png)
+![img](img/image-20240513120238275.png)
 
 其中PDU Type为标志类型，0x0e为连接请求，常用的还有0x0d连接确认、0x08断开请求、0x0c断开确认、0x05拒绝
 
@@ -60,11 +60,11 @@ S7comm的结构比较简单，主要分为三部分
 + Parameter，参数，随着不同类型的PDU会有不同的参数
 + Data，具体的数据
 
-![image-20240515170459827](S7comm 协议/image-20240515170459827.png)
+![img](img/image-20240515170459827.png)
 
 Header中字段如下所示
 
-![image-20240515171123631](S7comm 协议/image-20240515171123631.png)
+![img](img/image-20240515171123631.png)
 
 + Protocol Id：1 byte，即协议id，一般为0x32
 
@@ -92,7 +92,7 @@ S7Comm 中 Job(作业请求) 和 Ack_Data(确认数据响应) 中的 Parameter �
 
   当 PDU 类型为 Job 时，建立通信功能中 Parameter 的结构，如下图：
 
-  [![img](https://github.com/ffffffff0x/1earn/raw/master/assets/img/Security/ICS/S7comm%E7%9B%B8%E5%85%B3/9.png)](https://github.com/ffffffff0x/1earn/blob/master/assets/img/Security/ICS/S7comm相关/9.png)
+  [![img](img//github.com/ffffffff0x/1earn/raw/master/assets/img/Security/ICS/S7comm%E7%9B%B8%E5%85%B3/9.png)](https://github.com/ffffffff0x/1earn/blob/master/assets/img/Security/ICS/S7comm相关/9.png)
 
   具体的 Parameter 结构，如下：
 
@@ -107,9 +107,9 @@ S7Comm 中 Job(作业请求) 和 Ack_Data(确认数据响应) 中的 Parameter �
 
   当 PDU 类型为 Job 时，那么其 S7Comm 结构，如下图：
 
-  ![img](S7comm 协议/10.png)
+  ![img](img/10.png)
 
-  ![image-20240516112035800](S7comm 协议/image-20240516112035800.png)
+  ![img](img/image-20240516112035800.png)
 
   所以，接下来的 Parameter 字段是 item count(项目个数)，其类型为 Unsigned integer，大小为 1 byte。
 
@@ -126,9 +126,9 @@ S7Comm 中 Job(作业请求) 和 Ack_Data(确认数据响应) 中的 Parameter �
 
   PDU 类型为 Ack_Data 时，其 S7Comm 的结构，如下图：
 
-  ![img](https://github.com/ffffffff0x/1earn/raw/master/assets/img/Security/ICS/S7comm%E7%9B%B8%E5%85%B3/11.png)
+  ![img](img//github.com/ffffffff0x/1earn/raw/master/assets/img/Security/ICS/S7comm%E7%9B%B8%E5%85%B3/11.png)
 
-  ![image-20240516112251918](S7comm 协议/image-20240516112251918.png)
+  ![img](img/image-20240516112251918.png)
 
   其 Parameter 只有 function、item count 两个字段。Data 结构如下：
 
@@ -142,9 +142,9 @@ S7Comm 中 Job(作业请求) 和 Ack_Data(确认数据响应) 中的 Parameter �
 
   Write Var 中 Parameter 的结构跟读取值(Read Var[0x04])一样，但是 Write Var 还需写入值，所以 Write Var 比 Read Var 多了一个 Data 项。结构如下：
 
-  ![img](S7comm 协议/12.png)
+  ![img](img/12.png)
 
-  ![image-20240516112545687](S7comm 协议/image-20240516112545687.png)
+  ![img](img/image-20240516112545687.png)
 
   由此，Data 的结构为：
 
@@ -156,9 +156,9 @@ S7Comm 中 Job(作业请求) 和 Ack_Data(确认数据响应) 中的 Parameter �
 
   PDU 类型为 Ack_Data 时，其 S7Comm 的结构，如下图：
 
-  ![img](S7comm 协议/13.png)
+  ![img](img/13.png)
 
-  ![image-20240516112624087](S7comm 协议/image-20240516112624087.png)
+  ![img](img/image-20240516112624087.png)
 
   Parameter 也只有 function、item count 两个字段。而 Data 中也只有一个 Return code 字段，其结构如下：
 
@@ -182,7 +182,7 @@ S7Comm 中 Job(作业请求) 和 Ack_Data(确认数据响应) 中的 Parameter �
 
   在下载过程中，先是 Step7 向 PLC 发送一个请求下载的 Job，PLC 收到后则回复一个 Ack_Data。在发送完所有字节后，Step7 向 PLC 发送一个下载结束的 Job 来关闭下载会话。时序图如下
 
-  ![img](S7comm 协议/14.png)
+  ![img](img/14.png)
 
   下载有3种不同的功能类型：
 
@@ -190,7 +190,7 @@ S7Comm 中 Job(作业请求) 和 Ack_Data(确认数据响应) 中的 Parameter �
 
     当 PDU 类型为 Job 时，Request download [0x1A] 没有 Data，其 Parameter 的结构，如下
 
-    ![image-20240516114336798](S7comm 协议/image-20240516114336798.png)
+    ![img](img/image-20240516114336798.png)
 
     - 1 (1 byte): Function Status，功能码状态；
     - 2 (2 bytes): for all unknown bytes in blockcontrol；
@@ -208,13 +208,13 @@ S7Comm 中 Job(作业请求) 和 Ack_Data(确认数据响应) 中的 Parameter �
 
     PDU 类型为 Ack_Data 时，Request download [0x1A] 的 Parameter 中只有一个 function。
 
-    ![image-20240516114452826](S7comm 协议/image-20240516114452826.png)
+    ![img](img/image-20240516114452826.png)
 
   - 下载块(Download block [0x1B])
 
     下载是 Step7 发送块数据给 PLC。当 PDU 类型为 Job 时，Download block [0x1B] 也没有 Data，其 Parameter 的结构，如下
 
-    ![image-20240516114535475](S7comm 协议/image-20240516114535475.png)
+    ![img](img/image-20240516114535475.png)
 
     - 1 (1 byte): Function Status，功能码状态；
     - 2 (2 bytes): for all unknown bytes in blockcontrol；
@@ -230,7 +230,7 @@ S7Comm 中 Job(作业请求) 和 Ack_Data(确认数据响应) 中的 Parameter �
 
     那 PDU 类型为 Ack_Data 时，Download block [0x1B] 有 Parameter 和 Data，其 Parameter 的结构，如下
 
-    ![image-20240516114620507](S7comm 协议/image-20240516114620507.png)
+    ![img](img/image-20240516114620507.png)
 
     - 1 (1 byte): Function Status，功能码状态
 
@@ -244,7 +244,7 @@ S7Comm 中 Job(作业请求) 和 Ack_Data(确认数据响应) 中的 Parameter �
 
     当 PDU 类型为 Job 时，Download ended [0x1C] 也没有 Data，其 Parameter 的结构，如下：
 
-    ![image-20240516114905548](S7comm 协议/image-20240516114905548.png)
+    ![img](img/image-20240516114905548.png)
 
     - 1 (1 byte): Function Status，功能码状态；
     - 2 (2 bytes): for all unknown bytes in blockcontrol；
@@ -258,7 +258,7 @@ S7Comm 中 Job(作业请求) 和 Ack_Data(确认数据响应) 中的 Parameter �
 
     PDU 类型为 Ack_Data 时，Download ended [0x1C] 的 Parameter 中只有一个 function。
 
-  ![image-20240516114923627](S7comm 协议/image-20240516114923627.png)
+  ![img](img/image-20240516114923627.png)
 
 - **上传**
 
@@ -266,7 +266,7 @@ S7Comm 中 Job(作业请求) 和 Ack_Data(确认数据响应) 中的 Parameter �
 
   在上传过程中，先是 Step7 向 PLC 发送一个开始上传的 Job，PLC 收到后则回复一个 Ack_Data，并告诉 Step7 块的长度、上传会话 ID。然后 PLC 继续上传块数据到 Step7，直到 Step7 收到所有字节。最后，Step7 发送结束上传的作业请求来关闭上传会话。时序图如下
 
-  ![img](S7comm 协议/15.png)
+  ![img](img/15.png)
 
   上传有3种不同的功能类型，各个字段含义与下载类似
 
@@ -325,7 +325,7 @@ S7Comm 中 Job(作业请求) 和 Ack_Data(确认数据响应) 中的 Parameter �
 
   当 PDU 类型为 Job 时，PI service [0x28] 没有 Data，只有 Parameter，那 Parameter 的结构，如下：
 
-  ![image-20240516115432957](S7comm 协议/image-20240516115432957.png)
+  ![img](img/image-20240516115432957.png)
 
   - 1 (7 bytes): Unknown；
   - 2 (Unsigned integer, 2 bytes): Parameter block length；
@@ -357,7 +357,7 @@ S7Comm 中 Job(作业请求) 和 Ack_Data(确认数据响应) 中的 Parameter �
 
   PDU类型为ACK时，Parameter中仅含有Function字段
 
-  ![image-20240516115653934](S7comm 协议/image-20240516115653934.png)
+  ![img](img/image-20240516115653934.png)
 
 - **PLC STOP [0x29]**
 
@@ -379,7 +379,7 @@ Parameter 结构如下
 
 当 PDU 类型为 UserData 时，其 S7Comm 结构，如图所示,图中蓝色部分为 S7Comm 头部，橘色为 Parameter 部分.
 
-![img](S7comm 协议/16.png)
+![img](img/16.png)
 
 - **转换工作模式(Mode-transition [0x0])**
 
@@ -409,7 +409,7 @@ Parameter 结构如下
 
   请求报文和响应报文，如图所示
 
-  ![img](S7comm 协议/17.png)
+  ![img](img/17.png)
 
   请求报文的结构如下：
 
@@ -630,7 +630,7 @@ Parameter 结构如下
 
     如果要读取系统状态列表，则需要使用参数 SZL-ID 和 INDEX 指定要读取的内容。比如：读取 PLC 的名称，那 SZL-ID 是 W#16#011C，INDEX 是 W#16#0001
 
-    ![img](S7comm 协议/18.png)
+    ![img](img/18.png)
 
     每个部分系统状态列表都有一个编号。可以根据编号输出完整的部分列表或摘录。预定义了可能的部分列表摘录，并由一个数字标识。SZL-ID 由部分列表的编号、部分列表摘录的编号和模块等级组成。
 
@@ -718,7 +718,7 @@ Parameter 结构如下
 
     每个事件都分配有事件 ID，而事件 ID 的结构如图
 
-    ![img](S7comm 协议/19.png)
+    ![img](img/19.png)
 
     那事件 ID 的内容，包括：
 
